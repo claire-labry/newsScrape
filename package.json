@@ -1,0 +1,28 @@
+{
+  "name": "newsscrape",
+  "version": "1.0.0",
+  "description": "Website that scrapes news",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "node": "node server.js",
+    "watch": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/claire-labry/newsScrape.git"
+  },
+  "author": "Claire Labry",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/claire-labry/newsScrape/issues"
+  },
+  "homepage": "https://github.com/claire-labry/newsScrape#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1",
+    "express-handlebars": "^4.0.4",
+    "mongoose": "^5.9.16"
+  }
+}
