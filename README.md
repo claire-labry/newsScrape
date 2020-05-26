@@ -1,1 +1,1 @@
-# newsSrcape
+# newsScrape
