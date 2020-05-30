@@ -1,20 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const logger = require('morgan');
-// const axios = require('axios');
-// const cheerio = require('cheerio');
-// const models = require('./ models');
-// const routes = require('./routes');
 const exphbs = require('express-handlebars');
 
 // Connect Database
 
-mongoose.connect('mongodb://localhost/news_scrape');
-const db = mongoose.connection;
-
-db.once('open', function () {
-  console.log('Connected to Mongoose!');
+mongoose.connect('mongodb://localhost/news_scrape', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
+
 // Mongoose Connection
 var MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines';
@@ -35,6 +30,11 @@ app.use(express.static('public'));
 // Sets up handlebars connection
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
+
+// Router connection
+const routes = require('./routes/routes');
+
+app.use('/', routes);
 
 // Starts the server
 const PORT = process.env.PORT || 5000;
