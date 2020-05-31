@@ -32,11 +32,9 @@ app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
 // Router connection
-const routes = require('./routes/routes');
-
-app.use('/', routes);
+require('./routes/routes')(app);
 
 // Starts the server
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server has started on ${PORT}`));
+app.listen(PORT, () => console.log(`Server has started on port ${PORT}`));

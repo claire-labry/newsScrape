@@ -1,11 +1,6 @@
-const express = require('express');
-const router = express.Router();
-
 const axios = require('axios');
 const cheerio = require('cheerio');
 const db = require('../models');
-// const dbArticle = require('../../Article.js');
-// const dbNote = require('../../Note.js');
 
 module.exports = function (router) {
   router.get('/', function (req, res) {
