@@ -15,6 +15,10 @@ const ArticleSchema = new Schema({
     type: String,
     required: true,
   },
+  // 'img' is a string and it's being required
+  img: {
+    type: String,
+  },
 
   // 'note' is an object that stores a Note id
   // the ref property links the ObjectId to the Note model

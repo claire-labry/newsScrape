@@ -11,11 +11,22 @@
     <div class="row">
         <div class="col s2"></div>
         <div class="col s8 left-align">
+            {{#if article}}
             {{#each article}}
             <div class="card-panel">
-                <h4>{{this.title}}</h4>
-                <a href="/readArticle/{{this._id}}" class="waves-effect waves-light btn" id="btnSignUp">Read Article</a>
+                <a href={{link}}>
+                    <img src={{img}}>
+                </a>
+                <div class="card-panel">
+                    <h4>{{title}}</h4>
+                    <a class="waves-effect waves-light btn #ef9a9a red lighten-3"><i class="material-icons left"
+                            data-state="false" id={{title}}>add_circle</i>Saved Articles</a>
+                </div>
             </div>
             {{/each}}
+            {{else}}
+            <a class="waves-effect waves-light btn #ef9a9a red lighten-3"><i
+                    class="material-icons left">add_circle</i>{{nothing}}</a>
+            {{/if}}
         </div>
     </div>
