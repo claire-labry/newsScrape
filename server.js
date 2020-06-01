@@ -1,40 +1,36 @@
+// NPM Packages/Dependencies
+
 const express = require('express');
 const mongoose = require('mongoose');
-const logger = require('morgan');
 const exphbs = require('express-handlebars');
 
-// Connect Database
+// Express Initalization
+const PORT = process.env.PORT || 5000;
+const app = express();
 
-mongoose.connect('mongodb://localhost/news_scrape', {
+// Configure Middleware
+// Parses request body as JSON
+// Makes public a static folder
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static('public'));
+
+// Handlebar set up
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
+require('./routes/routes')(app);
+
+// MongoDB + Mongoose connection
+
+const MONGODB_URI =
+  process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines';
+mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-// Mongoose Connection
-var MONGODB_URI =
-  process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines';
-
-mongoose.connect(MONGODB_URI);
-
-// Initializes Express
-const app = express();
-
-// Configure middleware
-app.use(logger('dev'));
-// Parses request body as JSON
-app.use(express.json());
-
-// Makes public a static folder
-app.use(express.static('public'));
-
-// Sets up handlebars connection
-app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-app.set('view engine', 'handlebars');
-
-// Router connection
-require('./routes/routes')(app);
-
 // Starts the server
-const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server has started on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server has started on: http://localhost:${PORT}`)
+);
