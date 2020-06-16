@@ -4,51 +4,21 @@ const cheerio = require('cheerio');
 
 module.exports = function (app) {
   app.get('/scrape', function (req, res) {
-    axios.get('https://www.buzzfeed.com/').then(function (response) {
+    axios.get('https://www.technewsworld.com').then(function (response) {
       const $ = cheerio.load(response.data);
 
-      $('article data-buzzblock').each(function (i, element) {
+      $('div .title').each(function (i, element) {
         let result = {};
+        // Link
+        result.link = $(this).children('a').attr('href');
 
         // Main Headlines
-        result.title = $(this)
-          .children('div')
-          .children('div')
-          .children('a')
-          .children('h2')
-          .attr('featured-card_headline link-gray');
-
-        // Sub Headlines
-        result.title = $(this)
-          .children('div')
-          .children('div')
-          .children('div')
-          .children('h2')
-          .children('a')
-          .attr('js-card__link link-gray');
-
-        // Link to Main Headlines
-        result.link = $(this)
-          .children('div')
-          .children('div')
-          .children('div')
-          .children('a')
-          .attr('href');
-
-        // Link to subheadlines
-        result.link = $(this)
-          .children('div')
-          .children('div')
-          .children('div')
-          .children('h2')
-          .children('a')
-          .attr('href');
+        result.title = $(this).children('a');
 
         // Image for headlines
-        result.img = $(this)
-          .children('div')
-          .children('div')
-          .attr('wire-frame__img featured-image xs-relative card__image--big');
+        result.img = $(this).children('div').children('a').attr('src');
+
+        console.log(result.img);
 
         db.Article.findOne({ title: result.title }, function (err, found) {
           if (err) {
@@ -68,7 +38,7 @@ module.exports = function (app) {
         });
       });
 
-      res.send('Scrape Complete!');
+      res.redirect('/');
     });
   });
 
@@ -79,7 +49,7 @@ module.exports = function (app) {
         res.render('index', {
           message: 'Your scraped news',
           article: data,
-          nothing: 'Click button for articles',
+          // nothing: 'Click button for articles',
         });
       })
       .catch(function (err) {
@@ -119,6 +89,17 @@ module.exports = function (app) {
       })
       .then(function (dbArticle) {
         res.json(dbArticle);
+      })
+      .catch(function (err) {
+        res.json(err);
+      });
+  });
+
+  app.put('/articles/:id', function (req, res) {
+    db.Article.updateOne({ _id: req.params.id }, { saved: req.body.saved })
+      .populate('note')
+      .then(function (data) {
+        res.json(data);
       })
       .catch(function (err) {
         res.json(err);
