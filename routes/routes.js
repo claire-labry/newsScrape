@@ -4,42 +4,57 @@ const cheerio = require('cheerio');
 
 module.exports = function (app) {
   app.get('/scrape', function (req, res) {
-    axios.get('https://www.technewsworld.com').then(function (response) {
-      const $ = cheerio.load(response.data);
+    axios
+      .get('https://www.goodnewsnetwork.org/category/news/inspiring/')
+      .then(function (response) {
+        const $ = cheerio.load(response.data);
 
-      $('div .title').each(function (i, element) {
-        let result = {};
-        // Link
-        result.link = $(this).children('a').attr('href');
+        $('div .td_module_3').each(function (i, element) {
+          let result = {};
+          // Link
+          result.link = $(this)
+            .children('div')
+            .children('div')
+            .children('a')
+            .attr('href');
 
-        // Main Headlines
-        result.title = $(this).children('a');
+          // Main Headlines
+          result.title = $(this)
+            .children('div')
+            .children('div')
+            .children('a')
+            .attr('title');
 
-        // Image for headlines
-        result.img = $(this).children('div').children('a').attr('src');
+          // Image for headlines
+          result.img = $(this)
+            .children('div')
+            .children('div')
+            .children('a')
+            .children('img')
+            .attr('src');
 
-        console.log(result.img);
+          console.log(result.img);
 
-        db.Article.findOne({ title: result.title }, function (err, found) {
-          if (err) {
-            console.log(err);
-          }
-          if (found) {
-            console.log('This article has been scraped!');
-          } else {
-            db.Article.create(result)
-              .then(function (dbArticle) {
-                console.log(dbArticle);
-              })
-              .catch(function (err) {
-                console.log(err);
-              });
-          }
+          db.Article.findOne({ title: result.title }, function (err, found) {
+            if (err) {
+              console.log(err);
+            }
+            if (found) {
+              console.log('This article has been scraped!');
+            } else {
+              db.Article.create(result)
+                .then(function (dbArticle) {
+                  console.log(dbArticle);
+                })
+                .catch(function (err) {
+                  console.log(err);
+                });
+            }
+          });
         });
-      });
 
-      res.redirect('/');
-    });
+        res.redirect('/');
+      });
   });
 
   app.get('/', function (req, res) {
@@ -49,7 +64,7 @@ module.exports = function (app) {
         res.render('index', {
           message: 'Your scraped news',
           article: data,
-          // nothing: 'Click button for articles',
+          nothing: 'Click button for articles',
         });
       })
       .catch(function (err) {
