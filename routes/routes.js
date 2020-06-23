@@ -11,21 +11,21 @@ module.exports = function (app) {
 
         $('div .td_module_3').each(function (i, element) {
           let result = {};
-          // Link
+
+          // link
           result.link = $(this)
             .children('div')
             .children('div')
             .children('a')
             .attr('href');
-
-          // Main Headlines
+          // headlines
           result.title = $(this)
             .children('div')
             .children('div')
             .children('a')
             .attr('title');
 
-          // Image for headlines
+          // img
           result.img = $(this)
             .children('div')
             .children('div')
@@ -33,14 +33,18 @@ module.exports = function (app) {
             .children('img')
             .attr('src');
 
-          console.log(result.img);
+          // saved?
+          result.saved = false;
 
+          // console.log(result.img);
+
+          // functions to feed the database
           db.Article.findOne({ title: result.title }, function (err, found) {
             if (err) {
               console.log(err);
             }
             if (found) {
-              console.log('This article has been scraped!');
+              console.log('this article has been saved!');
             } else {
               db.Article.create(result)
                 .then(function (dbArticle) {
@@ -52,53 +56,34 @@ module.exports = function (app) {
             }
           });
         });
-
         res.redirect('/');
       });
   });
-
-  app.get('/', function (req, res) {
-    db.Article.find()
-      .lean()
-      .then(function (data) {
-        res.render('index', {
-          message: 'Your scraped news',
-          article: data,
-          nothing: 'Click button for articles',
-        });
-      })
-      .catch(function (err) {
-        res.json(err);
-      });
-  });
-
+  // gets the scraped articles
   app.get('/articles', function (req, res) {
     db.Article.find({})
       .then(function (dbArticle) {
         res.json(dbArticle);
       })
       .catch(function (err) {
-        res.json(err);
+        console.log(err);
       });
   });
-
-  app.get('/articles/:id', function (req, res) {
+  // finds the article by the id
+  app.post('/articles/:id', function (req, res) {
     db.Article.findOne({ _id: req.params.id })
       .populate('note')
       .then(function (dbArticle) {
         res.json(dbArticle);
-      })
-      .catch(function (err) {
-        res.json(err);
       });
   });
-
-  app.get('/articles/:id', function (req, res) {
+  // create a note with the id of the article
+  app.post('/articles/:id', function (req, res) {
     db.Note.create(req.body)
       .then(function (dbNote) {
         return db.Article.findOneAndUpdate(
           { _id: req.params.id },
-          { note: dbNote._id },
+          { $push: { note: dbNote._id } },
           { new: true }
         );
       })
@@ -109,7 +94,7 @@ module.exports = function (app) {
         res.json(err);
       });
   });
-
+  // saves the note to the article
   app.put('/articles/:id', function (req, res) {
     db.Article.updateOne({ _id: req.params.id }, { saved: req.body.saved })
       .populate('note')
