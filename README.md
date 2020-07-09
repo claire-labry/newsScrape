@@ -2,6 +2,10 @@
 
 newsScrape is an application that users can scrape different articles from a website with inspiring news to uplift their day. Users can read more on articles, save their articles, and add/view their notes on the articles. 
 
+## Deployed Link
+
+https://safe-plateau-65680.herokuapp.com/
+
 ## How to Use
 
 - Download repository 
