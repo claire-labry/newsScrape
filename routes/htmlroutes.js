@@ -24,7 +24,7 @@ module.exports = function (app) {
         res.render('saved', {
           message: 'Your saved news',
           saved: data,
-          nothing: 'You have no saved articles',
+          nothing: 'No Saved Articles',
         });
       });
   });
