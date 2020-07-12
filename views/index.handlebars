@@ -13,14 +13,14 @@
                                                 id={{title}}>add_circle</i>Read More </a>
 
                                 {{#if saved}}
-                                <a class="waves-effect waves-light btn #ef9a9a red lighten-3"><i
-                                                class="material-icons left" data-state="true"
-                                                data-id={{_id}}>add_circle</i>Save This Article
+                                <a class="waves-effect waves-light btn #ef9a9a red lighten-3" data-state="true"
+                                                data-id={{_id}} id="saveArticle"><i
+                                                class="material-icons left">add_circle</i>Save
                                 </a>
                                 {{else}}
-                                <a class="waves-effect waves-light btn #ef9a9a red lighten-3"><i
-                                                class="material-icons left" data-state="false"
-                                                data-id={{_id}}>add_circle</i>Save This Article
+                                <a class="waves-effect waves-light btn #ef9a9a red lighten-3" data-state="false"
+                                                data-id={{_id}} id="saveArticle"><i
+                                                class="material-icons left">add_circle</i>Save
                                 </a>
 
                                 {{/if}}
