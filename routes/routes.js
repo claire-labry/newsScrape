@@ -36,73 +36,74 @@ module.exports = function (app) {
           // saved?
           result.saved = false;
 
-          // console.log(result.img);
-
-          // functions to feed the database
-          db.Article.findOne({ title: result.title }, function (err, found) {
+          db.Article.findOne({ title: result.title }, function (
+            err,
+            found
+        ) {
             if (err) {
-              console.log(err);
+                console.log(err);
             }
             if (found) {
-              console.log('this article has been saved!');
+                console.log("This has been saved");
             } else {
-              db.Article.create(result)
-                .then(function (dbArticle) {
-                  console.log(dbArticle);
-                })
-                .catch(function (err) {
-                  console.log(err);
-                });
+                db.Article.create(result)
+                    .then(function (dbArticle) {})
+                    .catch(function (err) {
+                        console.log(err);
+                    });
             }
-          });
         });
-        res.redirect('/');
-      });
-  });
-  // gets the scraped articles
-  app.get('/articles', function (req, res) {
-    db.Article.find({})
-      .then(function (dbArticle) {
+    });
+    res.redirect("/");
+});
+});
+
+app.get("/articles", function (req, res) {
+db.Article.find({})
+    .then(function (dbArticle) {
         res.json(dbArticle);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
-  });
-  // finds the article by the id
-  app.post('/articles/:id', function (req, res) {
-    db.Article.findOne({ _id: req.params.id })
-      .populate('note')
-      .then(function (dbArticle) {
+    })
+    .catch(function (err) {
+        res.json(err);
+    });
+});
+
+app.get("/articles/:id", function (req, res) {
+db.Article.findOne({ _id: req.params.id })
+    .populate("note")
+    .then(function (dbArticle) {
         res.json(dbArticle);
-      });
-  });
-  // create a note with the id of the article
-  app.post('/articles/:id', function (req, res) {
-    db.Note.create(req.body)
-      .then(function (dbNote) {
+    })
+    .catch(function (err) {
+        res.json(err);
+    });
+});
+
+app.post("/articles/:id", function (req, res) {
+db.Note.create(req.body)
+    .then(function (dbNote) {
         return db.Article.findOneAndUpdate(
-          { _id: req.params.id },
-          { $push: { note: dbNote._id } },
-          { new: true }
+            { _id: req.params.id },
+            {$push: { note: dbNote._id }},
+            { new: true }
         );
-      })
-      .then(function (dbArticle) {
+    })
+    .then(function (dbArticle) {
         res.json(dbArticle);
-      })
-      .catch(function (err) {
+    })
+    .catch(function (err) {
         res.json(err);
-      });
-  });
-  // saves the note to the article
-  app.put('/articles/:id', function (req, res) {
-    db.Article.updateOne({ _id: req.params.id }, { saved: req.body.saved })
-      .populate('note')
-      .then(function (data) {
+    });
+});
+
+app.put("/articles/:id", function (req, res) {
+db.Article.updateOne({ _id: req.params.id }, { saved: req.body.saved })
+    .populate("note")
+    .then(function (data) {
         res.json(data);
-      })
-      .catch(function (err) {
+    })
+    .catch(function (err) {
         res.json(err);
-      });
-  });
+    });
+});
 };
